@@ -1,4 +1,4 @@
-  // Theme Toggle Functionality
+// Theme Toggle Functionality
         const themeToggle = document.getElementById('themeToggle');
         const themeIcon = document.getElementById('themeIcon');
         const themeText = document.getElementById('themeText');
@@ -186,29 +186,46 @@
             });
         });
 
+        // Initialize EmailJS
+        (function() {
+            emailjs.init("IUpXSZQqNlne1PrTi"); // Replace with your EmailJS public key
+        })();
+
         // Contact Form Submission
         const contactForm = document.querySelector('.contact-form');
         contactForm.addEventListener('submit', function(e) {
             e.preventDefault();
-            
-            // Simulate form submission
-            const submitBtn = this.querySelector('button[type="submit"]');
-            const originalText = submitBtn.innerHTML;
-            
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
-            submitBtn.disabled = true;
-            
-            setTimeout(() => {
-                submitBtn.innerHTML = '<i class="fas fa-check"></i> Message Sent!';
-                submitBtn.style.background = 'var(--success-color)';
-                
-                setTimeout(() => {
-                    submitBtn.innerHTML = originalText;
-                    submitBtn.disabled = false;
-                    submitBtn.style.background = '';
-                    this.reset();
-                }, 2000);
-            }, 2000);
+
+            // Show sending state
+            const submitButton = contactForm.querySelector('button[type="submit"]');
+            const originalButtonText = submitButton.innerHTML;
+            submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+            submitButton.disabled = true;
+
+            // Prepare template parameters
+            const templateParams = {
+                from_name: document.getElementById('name').value,
+                from_email: document.getElementById('email').value,
+                subject: document.getElementById('subject').value,
+                message: document.getElementById('message').value,
+                to_email: 'ramprasanth2802@gmail.com'
+            };
+
+            // Send email using EmailJS
+            emailjs.send('service_0b25au3', 'template_nhtwdvv', templateParams)
+                .then(function(response) {
+                    // Show success message
+                    alert('Message sent successfully!');
+                    contactForm.reset();
+                }, function(error) {
+                    // Show error message
+                    alert('Failed to send message. Please try again.');
+                })
+                .finally(() => {
+                    // Restore button state
+                    submitButton.innerHTML = originalButtonText;
+                    submitButton.disabled = false;
+                });
         });
 
         // Parallax Effect for Hero Section
